@@ -1,21 +1,51 @@
-package twenty_three.one
+package year2023
 
 import java.io.File
 
 fun main() {
+    part1()
+    part2()
+}
+
+fun part1() {
+    val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
+    val sum: Long = strings.stream().mapToLong {
+        findNumbers(it)
+    }.sum()
+    println(sum)
+}
+
+fun part2() {
     val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
     val sum: Long = strings.stream().mapToLong {
         replaceNumbers(it)
     }.sum()
-
     println(sum)
-
 }
 
 fun replaceNumbers(input: String): Long {
     val result: StringBuilder = java.lang.StringBuilder()
     result.append(findFirstNumber(input))
     result.append(findLastNumber(input))
+    return result.toString().toLong()
+}
+
+fun findNumbers(input: String): Long {
+    val result: StringBuilder = java.lang.StringBuilder()
+    for (i in input.indices) {
+        val element: Char = input[i]
+        if (element.isDigit()) {
+            result.append(element)
+            break
+        }
+    }
+    for (i in input.length - 1 downTo 0) {
+        val element: Char = input[i]
+        if (element.isDigit()) {
+            result.append(element)
+            break
+        }
+    }
     return result.toString().toLong()
 }
 
