@@ -1,9 +1,30 @@
 package twenty_three.one
 
-fun main(args: Array<String>) {
-    println("Hello World!")
+import java.io.File
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun main() {
+    val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
+    var sum: Long = 0
+    var number: StringBuilder = java.lang.StringBuilder()
+    strings.forEach {
+        for (i in it.indices) {
+            val element: Char = it[i]
+            if (element.isDigit()) {
+                number.append(element)
+                break
+            }
+        }
+        for (i in it.length - 1 downTo  0){
+            val element: Char = it[i]
+            if (element.isDigit()) {
+                number.append(element)
+                break
+            }
+        }
+        sum += number.toString().toLong()
+        number = java.lang.StringBuilder()
+    }
+
+    println(sum)
+
 }
