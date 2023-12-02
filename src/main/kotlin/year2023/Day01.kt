@@ -3,25 +3,30 @@ package year2023
 import java.io.File
 
 fun main() {
+
+    fun part1() {
+        val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
+        val sum: Long = strings.stream().mapToLong {
+            findNumbers(it)
+        }.sum()
+        println(sum)
+    }
+
+    fun part2() {
+        val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
+        val sum: Long = strings.stream().mapToLong {
+            replaceNumbers(it)
+        }.sum()
+        println(sum)
+    }
+
     part1()
     part2()
 }
 
-fun part1() {
-    val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
-    val sum: Long = strings.stream().mapToLong {
-        findNumbers(it)
-    }.sum()
-    println(sum)
-}
 
-fun part2() {
-    val strings: List<String> = File("src/main/resources/2023_day_1_input.txt").bufferedReader().readLines()
-    val sum: Long = strings.stream().mapToLong {
-        replaceNumbers(it)
-    }.sum()
-    println(sum)
-}
+
+
 
 fun replaceNumbers(input: String): Long {
     val result: StringBuilder = java.lang.StringBuilder()
