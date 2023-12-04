@@ -19,6 +19,21 @@ fun main() {
         return winMap[counter]
     }
 
+    fun calculateScratch(input: String, resultMap: MutableList<Long>) {
+        val inputArray: List<String> = input.split(":")
+        val numbers: String = inputArray[1].trim()
+        val values: List<String> = numbers.split("|")
+        val winNumbers: List<String> = values[0].trim().split("\\s+".toRegex())
+        val existNumbers: List<String> = values[1].trim().split("\\s+".toRegex())
+        var counter: Long = 0
+        for (i in existNumbers.indices) {
+            if (winNumbers.contains(existNumbers[i])) {
+                counter++
+            }
+        }
+        resultMap.add(counter)
+    }
+
     fun part1() {
         var sum: Long = 0
         val strings: List<String> = File("src/main/resources/2023_day_4_input.txt").bufferedReader().readLines()
@@ -29,16 +44,36 @@ fun main() {
     }
 
     fun part2() {
-        var sum: Long = 0
-        val strings: List<String> = File("src/main/resources/2023_day_4_example.txt").bufferedReader().readLines()
+        val resultList: MutableList<Long> = mutableListOf()
+        val numbersList: MutableList<Int> = mutableListOf()
+
+        val strings: List<String> = File("src/main/resources/2023_day_4_input.txt").bufferedReader().readLines()
         strings.forEach {
-            sum += calculateLine(it)
+            calculateScratch(it, resultList)
         }
-        println(sum)
+        strings.forEach {
+            numbersList.add(it.split(":")[0].trim().filter { str -> str.isDigit() }.toInt())
+        }
+
+        for (i in 1..resultList.size) {
+            val count: Long = numbersList
+                .stream().mapToInt { it.toInt() }
+                .filter { it == i }.count()
+            for (j in 1..count) {
+                val prize = resultList[i - 1]
+                for (k in i + 1..i + prize) {
+                    numbersList.add(k.toInt())
+                }
+            }
+        }
+
+        numbersList.stream().filter { it < resultList.size }
+
+        println(numbersList.size)
     }
 
     part1()
-//    part2()
+    part2()
 
 }
 
