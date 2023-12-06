@@ -34,13 +34,17 @@ fun main() {
         println(sum)
     }
 
-//    fun part2() {
-//        val strings: List<String> = File("src/main/resources/2023_day_5_input.txt").bufferedReader().readLines()
-//
-//    }
+    fun part2() {
+        val strings: List<String> = File("src/main/resources/2023_day_6_input.txt").bufferedReader().readLines()
+        val time: Long = strings[0].filter { it.isDigit() }.toLong()
+        val distances: Long = strings[1].filter { it.isDigit() }.toLong()
+        val pairs: Pair<Long, Long> = Pair(time, distances)
+        val numbersRace: Long = findRacesNumbers(pairs)
+        println(numbersRace)
+    }
 
     part1()
-//    part2()
+    part2()
 
 }
 
