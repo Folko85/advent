@@ -1,23 +1,92 @@
 package year2023
 
 import java.io.File
+import java.util.stream.IntStream
 
 fun main() {
 
-    val strings: List<String> = File("src/main/resources/2023_day_7_input.txt").bufferedReader().readLines()
-    val hands: List<Hand> = strings
-        .map { l: String ->
-            val cardsBid = l.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            Hand(cardsBid[0], analyzeHand(cardsBid[0]), cardsBid[1].toLong())
-        }
-        .sorted()
-        .toList()
+    fun part1() {
+        val map: Map<Char, Int> = mapOf(
+            '2' to 1,
+            '3' to 2,
+            '4' to 3,
+            '5' to 4,
+            '6' to 5,
+            '7' to 6,
+            '8' to 7,
+            '9' to 8,
+            'T' to 9,
+            'J' to 10,
+            'Q' to 11,
+            'K' to 12,
+            'A' to 13
+        )
+        val strings: List<String> = File("src/main/resources/2023_day_7_input.txt").bufferedReader().readLines()
+        val hands: List<Hand> = strings
+            .map { l: String ->
+                val cardsBid = l.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                Hand(cardsBid[0], analyzeHand(cardsBid[0]), cardsBid[1].toLong(), map)
+            }
+            .sorted()
+            .toList()
 
-    var bidSum: Long = 0
-    for (i in hands.indices) {
-        bidSum += hands[i].bid * (i + 1)
+        var bidSum: Long = 0
+        for (i in hands.indices) {
+            bidSum += hands[i].bid * (i + 1)
+        }
+        println(bidSum)
     }
-    println(bidSum)
+
+    fun part2() {
+        val map: Map<Char, Int> = mapOf(
+            'J' to 0,
+            '2' to 1,
+            '3' to 2,
+            '4' to 3,
+            '5' to 4,
+            '6' to 5,
+            '7' to 6,
+            '8' to 7,
+            '9' to 8,
+            'T' to 9,
+            'Q' to 11,
+            'K' to 12,
+            'A' to 13
+        )
+        val invertMap: Map<Int, String> = mapOf(
+            0 to "J",
+            1 to "2",
+            2 to "3",
+            3 to "4",
+            4 to "5",
+            5 to "6",
+            6 to "7",
+            7 to "8",
+            8 to "9",
+            9 to "T",
+            10 to "Q",
+            11 to "K",
+            12 to "A"
+        )
+
+        val strings: List<String> = File("src/main/resources/2023_day_7_input.txt").bufferedReader().readLines()
+        val hands: List<Hand> = strings
+            .map { l: String ->
+                val cardsBid = l.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                Hand(cardsBid[0], findType(cardsBid[0], invertMap), cardsBid[1].toLong(), map)
+            }
+            .sorted()
+            .toList()
+
+        var bidSum: Long = 0
+        for (i in hands.indices) {
+            bidSum += hands[i].bid * (i + 1)
+        }
+        println(bidSum)
+    }
+
+    part1()
+    part2()
 
 }
 
@@ -57,6 +126,20 @@ fun analyzeHand(hand: String): HandType {
     }
 }
 
+private fun findType(cards: String, invertMap: Map<Int, String>): HandType {
+    return IntStream.rangeClosed(0, 12)
+        .mapToObj { i: Int ->
+            analyzeHand(
+                cards.replace(
+                    "J".toRegex(),
+                    invertMap[i]!!
+                )
+            )
+        }
+        .min(Comparator.comparingInt { obj: HandType -> obj.ordinal })
+        .orElse(HandType.HIGH_CARD)
+}
+
 
 enum class HandType {
     FIVE_OF_A_KIND,
@@ -68,32 +151,14 @@ enum class HandType {
     HIGH_CARD
 }
 
-internal data class Hand(val cards: String, val handType: HandType, val bid: Long) : Comparable<Hand> {
+internal data class Hand(val cards: String, val handType: HandType, val bid: Long, val map: Map<Char, Int>) : Comparable<Hand> {
 
-    private val mutableMap: MutableMap<Char, Int> = HashMap(13)
-
-    init {
-        mutableMap['2'] = 1
-        mutableMap['3'] = 2
-        mutableMap['4'] = 3
-        mutableMap['5'] = 4
-        mutableMap['6'] = 5
-        mutableMap['7'] = 6
-        mutableMap['8'] = 7
-        mutableMap['9'] = 8
-        mutableMap['T'] = 9
-        mutableMap['J'] = 10
-        mutableMap['Q'] = 11
-        mutableMap['K'] = 12
-        mutableMap['A'] = 13
-    }
-
-    override fun compareTo(o: Hand): Int {
-        val typeCompare = o.handType.ordinal.toLong().compareTo(handType.ordinal.toLong())
+    override fun compareTo(other: Hand): Int {
+        val typeCompare = other.handType.ordinal.toLong().compareTo(handType.ordinal.toLong())
 
         if (typeCompare == 0) {
-            for (i in 0..<o.cards.length) {
-                val charCompare = mutableMap[cards[i]]!!.toLong().compareTo(mutableMap[o.cards[i]]!!.toLong())
+            for (i in 0..<other.cards.length) {
+                val charCompare = map[cards[i]]!!.toLong().compareTo(map[other.cards[i]]!!.toLong())
                 if (charCompare != 0) {
                     return charCompare
                 }
