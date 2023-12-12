@@ -18,7 +18,7 @@ fun main() {
         return result
     }
 
-    fun findPath(array: Array<Array<String>>): Int {
+    fun findPath(array: Array<Array<String>>): List<MutableList<Pair<Int, Int>>> {
 
         val firstPath: MutableList<Pair<Int, Int>> = mutableListOf()
         val secondPath: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -99,8 +99,7 @@ fun main() {
             }
         }
 
-
-        return firstPath.size - 1
+        return paths
 
     }
 
@@ -116,20 +115,100 @@ fun main() {
             }
         }
 
-        val result: Int = findPath(array)
+        val result: List<MutableList<Pair<Int, Int>>> = findPath(array)
 
-        println(result)
+        println(result[0].size - 1)
     }
 
 
+    fun countPointsInLoop(listOpPoint: List<MutableList<Pair<Int, Int>>>, array: Array<Array<String>>): Int {
+
+        val pathList: List<Pair<Int, Int>> = listOpPoint.flatMap { it.toList() }
+
+        for (i in array.indices) {
+            for (j in array[i].indices) {
+                val point = Pair(i, j)
+                if (!pathList.contains(point)) {
+                    array[i][j] = "."
+                }
+            }
+        }
+
+        for (i in array.indices) {
+            for (j in array[i].indices) {
+                if (array[i][j] == "B") {
+                    val rightPoint: Pair<Int, Int> = Pair(i, j + 1)
+                    val leftPoint: Pair<Int, Int> = Pair(i, j - 1)
+                    val upPoint: Pair<Int, Int> = Pair(i - 1, j)
+                    val downPoint: Pair<Int, Int> = Pair(i + 1, j)
+                    val west: Boolean = array[leftPoint.first][leftPoint.second] != "."
+                    val ost: Boolean = array[rightPoint.first][rightPoint.second] != "."
+                    val north: Boolean = array[upPoint.first][upPoint.second] != "."
+                    val south: Boolean = array[downPoint.first][downPoint.second] != "."
+                    if (west && ost) {
+                        array[i][j] = "WO"
+                    } else if (north && south) {
+                        array[i][j] = "NS"
+                    } else if (north && ost) {
+                        array[i][j] = "NO"
+                    } else if (south && ost) {
+                        array[i][j] = "SO"
+                    } else if (south && west) {
+                        array[i][j] = "SW"
+                    } else if (north && west) {
+                        array[i][j] = "NW"
+                    }
+                }
+            }
+        }
+
+        var result = 0
+        for (i in array.indices) {
+            var leftCounter = 0
+            var rightCounter = 0
+            for (j in array[i].indices) {
+                val currentValue: String = array[i][j]
+                if (currentValue != ".") {
+                    if (currentValue.contains("N")) {
+                        leftCounter++
+                    }
+                    if (currentValue.contains("S")) {
+                        rightCounter++
+                    }
+                } else {
+                    val counter = if (leftCounter < rightCounter) leftCounter else rightCounter
+                    if (counter % 2 != 0) {
+                        result++
+                    }
+                }
+            }
+        }
+
+        return result
+    }
+
     fun part2() {
-        var sum = 0L
+        val strings: List<String> = File("src/main/resources/2023_day_10_input.txt").bufferedReader().readLines()
+        val rows: Int = strings.size
+        val cols: Int = strings[0].length
+        val array: Array<Array<String>> = Array(rows) { Array(cols) { "" } }
+        for (i in 0..<rows) {
+            val row: String = strings[i]
+            for (j in 0..<cols) {
+                array[i][j] = interpret(row[j].toString())
+            }
+        }
 
+        val contourArray: Array<Array<String>> = array.map { it.clone() }.toTypedArray()
 
+        val path: List<MutableList<Pair<Int, Int>>> = findPath(array)
+        val count: Int = countPointsInLoop(path, contourArray)
+
+        println(count)
     }
 
     part1()
-//    part2()
+    part2()
 
 }
 
