@@ -1,5 +1,6 @@
 package year2023
 
+import utils.Utils.rotateClockwise
 import java.io.File
 import java.math.BigInteger
 import kotlin.math.abs
@@ -94,17 +95,7 @@ fun main() {
 
 }
 
-fun rotateClockwise(mat: Array<CharArray>): Array<CharArray> {
-    val rowSize = mat.size
-    val colSize = mat[0].size
-    val ret = Array(colSize) { CharArray(rowSize) }
-    for (r in 0..<rowSize) {
-        for (c in 0..<colSize) {
-            ret[c][rowSize - 1 - r] = mat[r][c]
-        }
-    }
-    return ret
-}
+
 
 
 
