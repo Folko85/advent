@@ -4,20 +4,23 @@ import java.io.File
 import kotlin.math.abs
 
 fun main() {
+
+    fun part1() {
+        val input: List<String> = File("src/main/resources/year2024/day2_input.txt").bufferedReader().readLines()
+        println(input.map { it.split(" ").map(String::toInt) }.count { isSafe(it) })
+    }
+
+    fun part2() {
+        val input: List<String> = File("src/main/resources/year2024/day2_input.txt").bufferedReader().readLines()
+        println(input.map { it.split(" ").map(String::toInt) }.count { isSafeWithDampener(it) })
+    }
+
     part1()
     part2()
 
 }
 
-fun part1() {
-    val input: List<String> = File("src/main/resources/year2024/day2_input.txt").bufferedReader().readLines()
-    println(input.map { it.split(" ").map(String::toInt) }.count { isSafe(it) })
-}
 
-fun part2() {
-    val input: List<String> = File("src/main/resources/year2024/day2_input.txt").bufferedReader().readLines()
-    println(input.map { it.split(" ").map(String::toInt) }.count { isSafeWithDampener(it) })
-}
 
 fun isSafe(report: List<Int>): Boolean {
     val isIncreasing = report.zipWithNext().all { it.second > it.first }
