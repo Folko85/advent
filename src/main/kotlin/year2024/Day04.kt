@@ -62,9 +62,51 @@ fun main() {
         }
         println(sum)
 
+    }
+
+    fun advancedCheckXmas(array: Array<Array<String>>, i: Int, j: Int): Int {
+        val minX = i - 1
+        val maxX = i + 1
+        val minY = j - 1
+        val maxY = j + 1
+        if (minX < 0 || minY < 0 || maxX >= array.size || maxY >= array[0].size) {
+            return 0
+        } else if (((array[minX][minY] == "M" && array[maxX][maxY] == "S") || (array[minX][minY] == "S" && array[maxX][maxY] == "M"))
+            && ((array[minX][maxY] == "M" && array[maxX][minY] == "S") || (array[minX][maxY] == "S" && array[maxX][minY] == "M"))
+        ) {
+            return 1
+        }
+        return 0
+    }
+
+    fun part2() {
+        val strings: List<String> = File("src/main/resources/year2024/day4_input.txt").bufferedReader().readLines()
+        val rows: Int = strings.size
+        val cols: Int = strings[0].length
+        val array: Array<Array<String>> = Array(rows) { Array(cols) { "" } }
+        for (i in 0..<rows) {
+            val row: String = strings[i]
+            for (j in 0..<cols) {
+                array[i][j] = (row[j].toString())
+            }
+        }
+
+        var sum = 0
+
+        for (i in 0..<rows) {
+            for (j in 0..<cols) {
+                if (array[i][j] == "A") {
+                    sum += advancedCheckXmas(array, i, j)
+                }
+            }
+        }
+        println(sum)
 
     }
+
     part1()
+    part2()
+
 
 }
 
