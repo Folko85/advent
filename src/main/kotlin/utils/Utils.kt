@@ -16,4 +16,14 @@ object Utils {
         return ret
     }
 
+    fun getCopy(array: Array<Array<String>>): Array<Array<String>> {
+        val copy = Array(array.size) { Array(array[0].size) { "" } }
+        for (i in array.indices) {
+            for (j in array[i].indices) {
+                copy[i][j] = array[i][j]
+            }
+        }
+        return copy
+    }
+
 }
