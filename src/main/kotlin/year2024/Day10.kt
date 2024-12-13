@@ -12,7 +12,7 @@ fun main() {
             Pair(1, 0)
         )
 
-    fun fillRoutes(array: Array<Array<Int>>, i: Int, j: Int, nextTop: Int, routes: MutableSet<Pair<Int, Int>>) {
+    fun fillRoutes(array: Array<Array<Int>>, i: Int, j: Int, nextTop: Int, routes: MutableCollection<Pair<Int, Int>>) {
         directions.forEach { direction ->
             run {
                 val nextI: Int = i + direction.first
@@ -28,7 +28,7 @@ fun main() {
         }
     }
 
-    fun part1() {
+    fun part1(advanced: Boolean) {
         val strings: List<String> = File("src/main/resources/year2024/day10_input.txt").bufferedReader().readLines()
         val rows: Int = strings.size
         val cols: Int = strings[0].length
@@ -45,9 +45,15 @@ fun main() {
         for (i in 0..<rows) {
             for (j in 0..<cols) {
                 if (array[i][j] == 0) {
-                    val routes: MutableSet<Pair<Int, Int>> = mutableSetOf()
-                    fillRoutes(array, i, j, 1, routes)
-                    sum += routes.size
+                    if (advanced) {
+                        val routes: MutableList<Pair<Int, Int>> = mutableListOf()
+                        fillRoutes(array, i, j, 1, routes)
+                        sum += routes.size
+                    } else {
+                        val routes: MutableSet<Pair<Int, Int>> = mutableSetOf()
+                        fillRoutes(array, i, j, 1, routes)
+                        sum += routes.size
+                    }
                 }
             }
         }
@@ -55,7 +61,12 @@ fun main() {
 
     }
 
-    part1()
+    fun part2() {
+        part1(true)
+    }
+
+    part1(false)
+    part2()
 
 }
 
