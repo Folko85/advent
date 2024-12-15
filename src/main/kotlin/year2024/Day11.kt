@@ -1,38 +1,45 @@
 package year2024
 
-import utils.Utils
 import java.io.File
 
 fun main() {
 
-    fun part1() {
-        val string: String = File("src/main/resources/year2024/day11_input.txt").bufferedReader().readLine()!!
+    val cache = mutableMapOf<Pair<Long, Int>, Long>()
 
-        val numbers: MutableList<Long> = string.split("\\s+".toRegex()).map { it.trim().toLong() }.toMutableList()
-        val newNumbers: MutableList<Long> = mutableListOf()
-
-        for (i in 1..25) {
-            for (j in numbers.indices) {
-                if (numbers[j] == 0L) {
-                    newNumbers.add(1L)
-                } else if (numbers[j].toString().length % 2 == 0) {
-                    val newLength = numbers[j].toString().length / 2
-                    val divider = Utils.power(10, newLength)
-                    newNumbers.add(numbers[j] / divider)
-                    newNumbers.add(numbers[j] % divider)
-
-                } else {
-                    newNumbers.add(numbers[j] * 2024)
-                }
-            }
-            numbers.clear()
-            numbers.addAll(newNumbers)
-            newNumbers.clear()
+    fun blink(stone: Long): List<Long> = when {
+        stone == 0L -> listOf(1L)
+        stone.toString().length % 2 == 0 -> {
+            val whole = stone.toString()
+            listOf(whole.take(whole.length / 2).toLong(), whole.drop(whole.length / 2).toLong())
         }
 
-        println(numbers.size)
+        else -> listOf(stone * 2024)
     }
 
+    fun calculateCount(stone: Long, iterations: Int): Long {
+        if (iterations == 0) return 1
+        cache[stone to iterations]?.let { return it }
+        return blink(stone).sumOf { calculateCount(it, iterations - 1) }
+            .also { cache[stone to iterations] = it }
+    }
+
+    fun solve(iterations: Int) {
+        val string: String = File("src/main/resources/year2024/day11_input.txt").bufferedReader().readLine()!!
+        val sourceNumbers: MutableList<Long> = string.split("\\s+".toRegex()).map { it.trim().toLong() }.toMutableList()
+
+        val sum = sourceNumbers.sumOf { calculateCount(it, iterations) }
+        println(sum)
+
+    }
+
+    fun part1() {
+        solve(25)
+    }
+
+    fun part2() {
+        solve(75)
+    }
 
     part1()
+    part2()
 }
