@@ -49,7 +49,46 @@ fun main() {
     }
 
 
+    fun findAvailablePaperPlaces(
+        rows: Int,
+        cols: Int,
+        array: Array<Array<String>>,
+        paperPlaces: MutableList<Pair<Int, Int>>
+    ) {
+        for (i in 0..<rows) {
+            for (j in 0..<cols) {
+                if (array[i][j] == "@" && isPositionAvailable(i, j, array)) {
+                    paperPlaces.add(Pair(i, j))
+                }
+            }
+        }
+    }
+
     fun part2() {
+        val strings: List<String> = File("src/main/resources/year2025/day4_input.txt").bufferedReader().readLines()
+        val rows: Int = strings.size
+        val cols: Int = strings[0].length
+        val array: Array<Array<String>> = Array(rows) { Array(cols) { "" } }
+        for (i in 0..<rows) {
+            val row: String = strings[i]
+            for (j in 0..<cols) {
+                array[i][j] = (row[j].toString())
+            }
+        }
+
+        var sum = 0
+
+        val paperPlaces: MutableList<Pair<Int, Int>> = mutableListOf()
+        do {
+            paperPlaces.forEach { place ->
+                array[place.first][place.second] = "."
+            }
+            paperPlaces.clear()
+            findAvailablePaperPlaces(rows, cols, array, paperPlaces)
+            sum += paperPlaces.size
+        } while (paperPlaces.isNotEmpty())
+
+        println(sum)
     }
 
     part1()
