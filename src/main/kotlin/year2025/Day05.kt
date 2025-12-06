@@ -33,7 +33,51 @@ fun main() {
     }
 
     fun part2() {
+        var counter = 0L
+        val intervals: MutableList<LongRange> = mutableListOf()
 
+        val strings: List<String> = File("src/main/resources/year2025/day5_input.txt").bufferedReader().readLines()
+
+        for (i in 0..<strings.size) {
+            if (strings[i].isBlank()) {
+                break
+            } else {
+                val intervalLong = strings[i].split("-".toRegex()).map { it.toLong() }
+                val startInterval = intervalLong[0]
+                val endInterval = intervalLong[1]
+                intervals.add(LongRange(startInterval, endInterval))
+            }
+        }
+
+        intervals.sortWith { o1, o2 -> o1.first.compareTo(o2.first) }
+
+        var start = 0L
+        var end = 0L
+
+        var isNewInterval = true
+
+        for (j in 1..<intervals.size) {
+            val leftStart = intervals[j - 1].first
+            val leftEnd = intervals[j - 1].last
+            val rightStart = intervals[j].first
+            val rightEnd = intervals[j].last
+            if (isNewInterval) {
+                start = leftStart
+                end = leftEnd
+            }
+
+            if (rightStart <= end) {
+                isNewInterval = false
+                end = if (rightEnd > end) rightEnd else end
+            } else {
+                counter += (end - start + 1)
+                isNewInterval = true
+            }
+
+        }
+        counter += (end - start + 1)
+
+        println(counter)
     }
     part1()
     part2()
